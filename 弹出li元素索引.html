@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      li{
+        width: 20px;
+        height: 20px;
+        background: green;
+        margin-top:10px;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="ul-list">
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+    </ul>
+    <script>
+      var ul = document.getElementById('ul-list')
+      var ulLi = ul.getElementsByTagName('li')
+
+      /***  方法一
+      for (var i=0; i<ulLi.length; i++) {
+        ulLi[i].index = i+1
+        ulLi[i].onclick = function () {
+          alert(this.index)
+        }        
+      }
+      */
+      for (var i=0; i<ulLi.length; i++) {
+        (function (i) {
+          ulLi[i].onclick = function () {
+            alert(i)
+          }  
+        })(i)
+             
+      }
+
+   
+    </script>
+  </body>
+</html>
