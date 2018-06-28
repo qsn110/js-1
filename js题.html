@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv = "content-type" content = "text/html,charset = utf-8">
+<!-- <script type = "text/javascript" src = "Q_A.js"></script> -->
+
+<script>
+
+/*================1====================
+
+ * 用js实现随机选取10–100之间的10个数字，存入一个数组，并排序。(假如既包含n又包含M)
+ * 步骤一：获得随机数
+ * 步骤二：获取10个数字，存入数组
+ * 步骤三：排序
+ * 
+ *=====================================*/
+function getRandom(start,end){
+    //应该先要判断start和end是否是整数数字
+    var length = end - start;
+    var randomNum = Math.round(Math.random() * length + start);
+    return randomNum
+
+}
+function getNums(number){
+    var arr = [];
+    for(var i = 0 ;i < number;i++){
+        arr.push(getRandom(10,100));
+    }
+    return arr
+}
+function sortNum(arr){
+    // var arr = [1,2,15,5,25];
+    // 不能用sort方法，会有错误
+    // var arr = getNums(10);
+    
+    arr.sort(function(a,b){return a - b;});
+    return arr;
+}
+//var arr = getNums(10);
+// var results = sortNum(arr);
+// console.log(results);
+
+
+
+/**2
+ * 把两个数组合并，并删除第二个元素。
+ * 步骤一：合并两个数组，可以有多种情况，用concat是创建了一个新的数组。如果不想创建新的数组的话，可以用push方法把一个数组中的元素添加到另一个数组中
+ * 步骤二：删除第二个元素
+ */
+function packedArray(arr1,arr2){
+
+    var arr = arr1.concat(arr2);
+    return arr
+
+}
+function deleteEle(arr,index,number){
+
+    arr.splice(index,number);  //splice返回是被删除的元素
+}
+/*
+var arr1 = [1,34,3];
+var arr2 = [2,56];
+
+var arr = packedArray(arr1,arr2);
+console.log(arr);
+deleteEle(arr,1,1);     
+console.log(arr);
+*/
+
+/**3
+ * 有这样一个URL：http://item.taobao.com/item.htm?a=1&b=2&c=&d=xxx&e，请写一段JS程序提取URL中的各个GET参数(参数名和参数个数不确定)，将其按key-value形式返回到一个json结构中，如{a:’1′, b:’2′, c:”, d:’xxx’, e:undefined}。
+ * 
+ */
+function getArgumentsStr(url){
+
+    var posi = url.indexOf("?");
+    if (posi != -1){
+
+        var argumentsStr = url.substring(posi+1);  //也可以用split方法
+    }
+    return argumentsStr;
+}
+function dealStr(str){
+
+    var obj = {};
+    var arr = str.split("&");
+    for(var i = 0,len = arr.length;i<len;i++){
+
+        var item = arr[i];
+        var key = item.split("=")[0];
+        var value = item.split("=")[1];    //split方法中，假如传入的参数不存在，则会返回之前的元素
+        
+        obj[key] = value;  //不能用obj.key = value,否则会变成{key:1}
+       
+    }
+    return obj;
+}
+/*
+var arguStr = getArgumentsStr("http://item.taobao.com/item.htm?a=1&b=2&c=&d=xxx&e");
+var obj = dealStr(arguStr);
+//JSON.parse(obj);
+console.log(obj);
+*/
+
+
+/**4
+ * 看下面代码，给出输出结果。
+ */
+function example1(){
+    for(var i = 0;i<=3;i++){
+        setTimeout(function(){
+            console.log(i)
+        },0);
+    }
+}
+function example2(){
+    for(var i = 0;i<=3;i++){
+
+        (function(i){
+            setTimeout(function(){
+                console.log(i)
+            },0);
+        })(i);
+        
+    }
+}
+/*
+example1(); //输出4444
+example2(); //输出0123
+*/
+
+/**5 ????
+ * 写一个function，清除字符串前后的空格。（兼容所有浏览器）
+ * 用正则表达式实现
+ */
+//
+function trim(str){ //删除左右两端的空格
+    return str.replace(/(^\s*)|(\s*$)/g, "");
+}
+function ltrim(str){ //删除左边的空格
+    return str.replace(/(^\s*)/g,"");
+}
+function rtrim(str){ //删除右边的空格
+    return str.replace(/(\s*$)/g,"");
+}
+
+/**6
+ * 实现一个函数clone，可以对JavaScript中的5种主要的数据类型（包括Number、String、Object、Array、Boolean）进行值复制
+ * 考察点1：对于基本数据类型和引用数据类型在内存中存放的是值还是指针这一区别是否清楚
+ * 考察点2：是否知道如何判断一个变量是什么类型的
+ * 考察点3：递归算法的设计
+ * 
+ */
+/*
+  方法一 代码较方法二多，但是易读
+ */
+function clone(obj){
+    var o;
+    switch(typeof obj){
+
+        case 'undefined':
+            break;
+
+        case 'string':
+            o = obj + '';
+            break;
+
+        case 'number':
+            o = obj - 0;
+            break;
+
+        case 'bollean':
+            o = obj;
+            break;
+
+        case 'object': //object array null
+            if(obj === null){
+                o = null;
+            }else{
+
+                if(Object.prototype.toString.call(obj) === '[object Array]'){    //array
+                    o = [];
+                    for(var i = 0,len = obj.length;i<len;i++){
+                        o.push(clone(obj[i]));  
+                    }
+                }else{  //object
+
+                    o = {};
+                    for(var key in obj){
+
+                        o[key] = clone(obj[key]);    //不能写成o.key,否则会变成 o = {key:1212};
+                    }
+                }
+            }
+            break;   //break不能忘记。不写break会导致执行default,会导致array和object还是赋值的引用
+        default:
+            o = obj;
+            break;
+
+
+    }
+    return o;
+
+}
+/*
+    方法二
+ */
+/*
+function clone(obj) {   
+    var o; 
+
+    if (obj instanceof Array) {   
+
+        o = [];                    //创建一个空的数组 
+        var i = obj.length;   
+        while (i--) {   
+            o[i] = clone(obj[i]);   
+        }          
+   
+    }else if (obj instanceof Object){   
+        o = {};                   //创建一个空对象 
+        for (var k in obj) {           //为这个对象添加新的属性 
+            o[k] = clone(obj[k]);   
+        }   
+         
+    }else{  
+        o = obj;                   //普通变量直接赋值
+        
+    } 
+    return o;   
+}
+*/
+/*  test
+var arr = [1,23,6];
+var newarr = clone(arr);
+newarr[1] = 45;
+console.log('arr = ',arr);
+
+console.log('newarr = ',newarr);
+*/
+
+
+/**7如何消除一个数组里面重复的元素？
+ *  方法1和方法2时间复杂度高，不好
+ *  方法5最优
+ */
+  
+function deleteRepeat_1(arr){  //会改变之前的数组
+
+    if(arr instanceof Array){   //确保返回值是boolean类型
+       
+        for(var i = 0,len = arr.length;i<len;i++){
+            for(var j = i+1;j<len;j++){
+                    if(arr[i] === arr[j]){
+                        arr.splice(j,1);
+                    }
+            }
+       }
+    }
+    // return arr;
+}
+
+function deleteRepeat_2(arr){  //不会改变之前的数组,d
+
+    if(arr instanceof Array){   //确保返回值是boolean类型
+        var newarr = clone(arr);  //把数组值拷贝一份
+        for(var i = 0,len = newarr.length;i<len;i++){
+            for(var j = i+1;j<len;j++){
+                if(newarr[i] === newarr[j]){
+                    newarr.splice(j,1);
+                }
+            }
+       }
+    }
+    return newarr;
+}
+
+function deleteRepeat_3(arr){  //时间复杂度较上面的方法低，空间复杂度变高了，多了o这个变量
+    var o = {};
+    var newarr = [];
+
+    if(arr instanceof Array){ 
+        for(var i = 0,len = arr.length;i<len;i++){
+            o[arr[i]] = true;   //重复的会被覆盖掉
+        }
+        for(key in o){
+
+            newarr.push(key);
+
+        }
+    }
+    return newarr;
+}
+function deleteRepeat_4(arr){  //空间复杂度和时间复杂度低，但是需要创建一个新数组
+    var newarr = [];
+    if(arr instanceof Array){ 
+
+        for(var i=0,len = arr.length;i<len;i++){
+            if(newarr.indexOf(arr[i]) == -1){   //indexOf会浪费资源和时间
+                newarr.push(arr[i]);
+            }
+        }
+    }
+    return newarr;
+
+}
+function deleteRepeat_5(arr){  //对方法3的优化
+    var o = {};
+    var newarr = [];
+
+    if(arr instanceof Array){ 
+        for(var i = 0,len = arr.length;i<len;i++){
+
+            if(o[arr[i]] == undefined){
+
+                o[arr[i]] = true;   //重复的会被覆盖掉
+                newarr.push(arr[i])
+
+            }else if (o[arr[i]] == true){
+                continue;
+            }
+
+        }
+        
+    }
+    return newarr;
+}
+/* test
+var arr = ['a','sfdf','fg','bbb','a','bbb'];
+console.log('arr =',arr);
+var newarr = deleteRepeat_5(arr);
+console.log('newarr =',newarr);
+*/
+
+/**8
+* 下面这个ul，如何点击每一列的时候alert其index?
+<ul id="test">
+<li>这是第一条</li>
+<li>这是第二条</li>
+<li>这是第三条</li>
+</ul>
+
+ */
+function clickList_1(){
+    // var list = document.getElementById('test');
+    var lists = document.getElementById('test1').getElementsByTagName('li');
+    for(var i = 0,len = lists.length;i<len;i++){
+
+        var list = lists[i];
+
+        (function(i){
+            list.onclick = function(event){alert(i);}
+        })(i)
+        
+    }
+    
+}
+function clickList_2(){
+    // var list = document.getElementById('test');
+    var lists = document.getElementById('test1').getElementsByTagName('li');
+    for(var i = 0,len = lists.length;i<len;i++){
+
+        var list = lists[i];
+        list.index = i;
+
+        list.onclick = function(event){alert(this.index);}
+
+        
+    }
+    
+}
+/*
+window.onload = function(){
+    clickList_2();
+}
+*/
+
+/**9  ？？？？
+ *编写一个JavaScript函数，输入指定类型的选择器(仅需支持id，class，tagName三种简单CSS选择器，无需兼容组合选择器)可以返回匹配的DOM节点，需考虑浏览器兼容性和性能。
+ *
+ */
+function queryDOM(selector){
+    var reg = /^(#)?(\.)?(\w+)$/img;  
+    /*
+        拆一下 //之间的是正则的内容 后面img是正则的匹配方式
+        i：ignorCase忽略大小写
+        m：mutiple允许多行匹配
+        g：globle进行全局匹配，指匹配到目标串的结尾
+
+        正则内容：^(#)?(\.)?(\w+)$ ^代表以xxx开头 $代表以xxxx结尾
+        (#)?可以带一个或者不带#
+        (.)? 可以带.或者没有.
+        (w+) 匹配一个或多个单词
+    */
+    var regResult = reg.exec(selector);  
+    var result = [];  
+   
+        //如果是id选择器  
+    if(regResult[1] && regResult[3]) {  
+        if(typeof document.querySelector === "function") {  
+            result.push(document.querySelector(regResult[0]));  //  用 result[result.length] = ..速度更快  
+        }  
+        else {  
+            result.push(document.getElementById(regResult[3]));  
+        }  
+    }  
+    //如果是class选择器  
+    else if(regResult[2] && regResult[3]) {  
+        if(typeof document.getElementsByClassName === 'function') {  
+            var doms = document.getElementsByClassName(regResult[3]);  
+            if(doms) {  
+                result = converToArray(doms);  
+            }  
+        } else {  //如果不支持getElementsByClassName函数  
+            var allDoms = document.getElementsByTagName("*") ;  
+            for(var i = 0, len = allDoms.length; i < len; i++) {  
+                if(allDoms[i].className.search(new RegExp(regResult[2])) > -1) {  
+                    result.push(allDoms[i]);  
+                }  
+            }  
+        }  
+    }  
+    //如果是标签选择器  
+    else if(regResult[3]) {  
+        var doms = document.getElementsByTagName(regResult[3].toLowerCase());  
+        if(doms) {  
+            result = converToArray(doms);  
+        }  
+    }  
+    return result;  
+}  
+   
+function converToArray(nodes){  
+    var array = null;  
+    try{          
+        array = Array.prototype.slice.call(nodes,0);//针对非IE浏览器           
+    }catch(ex){  
+        array = new Array();           
+        for( var i = 0 ,len = nodes.length; i < len ; i++ ) {   
+            array.push(nodes[i])           
+        }           
+    }        
+    return array;  
+} 
+/*
+window.onload = function(){
+    var result = queryDOM('.li');
+    console.log('result = ',result);
+}
+*/
+
+
+/**10
+ *给String对象添加一个方法，传入一个string类型的参数，然后将string的每个字符间加个空格返回，例如：
+ * 
+ */
+String.prototype.addSpace_1 = function(str){
+    var newstr;
+    if(typeof str === 'string'){
+        var tempArr = str.split('');
+        newstr = tempArr.join(' '); 
+    }
+    return newstr;
+}
+
+String.prototype.addSpace = function(){  //方法一的改进
+    //if(typeof str === 'string'){     不用加类型判断，如果不是string类型的变量，调用此方法的时候会报错
+
+    return this.split('').join(' ');
+    //}
+}
+/*
+var str = 'hello';
+var result = str.addSpace(str)
+console.log('result = ',result);
+*/
+
+/*================11====================
+ 
+ *  已知ID的Input输入框，希望获取这个输入框的输入值，怎么做？(不使用第三方框架)
+
+
+ *=====================================*/
+function getInputValue(id){
+
+    if(!document.getElementById) return false;
+    if(!document.getElementById(id)) return false;
+
+    var input = document.getElementById(id);
+    var value = input.getAttribute('value');   //或者value = input.value,这是html dom的写法，前者是xml dom 写法
+    return value;
+}
+/*
+window.onload = function(){
+    var value = getInputValue('test2');
+    console.log('value = ',value);
+}
+*/
+
+/*================12====================
+ 
+ *  设置一个已知ID的DIV的html内容为xxxx，字体颜色设置为黑色(不使用第三方框架)
+
+ *=====================================*/
+
+function setDiv(id){
+
+    if(!document.getElementById) return false;
+    if(!document.getElementById(id)) return false;
+
+    var div = document.getElementById(id);
+
+    div.style.height = '200px';
+    div.style.width = '200px';
+    div.innerHTML = 'xxx';
+    div.style.backgroundColor = 'black';
+    div.style.color = 'white';
+
+}
+/*
+window.onload = function(){
+    setDiv('test3');
+}
+*/
+
+/*================13====================
+ 
+ *  看下面的代码，输出什么，foo的类型为什么？
+
+ *=====================================*/
+
+function example_3(){
+
+    var foo1 = '11' + 2 - '1';
+    var foo2 = '11' + 2 + '1';
+
+    console.log('foo1 = ',foo1);     //111
+    console.log('foo1 type:',typeof foo1);   //number
+
+    console.log('foo2 = ',foo2);   //1121
+    console.log('foo2 type:',typeof foo2);   //string
+
+}
+/*
+example_3();
+*/
+/*================14====================
+ 
+ *  用面向对象的Javascript来介绍一下自己 ??没有看明白，有时间自己写一个
+
+ *=====================================*/
+
+/*
+function extend(sup, overrides) {  
+    var sub = overrides && overrides.constructor || function() {  
+        sup.apply(this, arguments);  
+    };  
+    var fn = function() {};  
+    var subp;  
+    fn.prototype = new sup;  
+    subp = sub.prototype = fn.prototype;  
+    subp.constructor = sub;  
+    apply(subp, overrides);  
+    sub.superClass = sup.prototype;  
+    return sub;  
+}  
+  
+function apply(o, c) {  
+    if (o && c && typeof c == 'object') {  
+        for (var p in c) {  
+            o[p] = c[p];  
+        }  
+    }  
+    return o;  
+}  
+  
+function FrontEnder() {  
+    this.skills = ['HTML', 'CSS', 'JavaScript'];  
+}  
+  
+apply(FrontEnder.prototype, {  
+    code: function() {  
+        console.log('我能编写处理业务逻辑代码');  
+    },  
+    paint: function() {  
+        console.log('我能还原设计稿');  
+    },  
+    debug: function() {  
+        console.log('我能使用工具调试代码');  
+    }  
+});  
+  
+var Me = extend(FrontEnder, {  
+    constructor: function() {  
+        // 个人的性格是怎么样的？等完善  
+        var _character = '';  
+        return function Me(config) {  
+            config = config || {};  
+            Me.superClass.constructor.call(this);  
+            this.skills = this.skills.concat(['HTML5', 'CSS3', 'Grunt', 'Zepto', 'Webapp', 'ChromeDevtool']);  
+            apply(this, config);  
+        }  
+    }(),  
+    paint: function() {  
+        Me.superClass.paint.call(this);  
+        console.log('我可以用CSS3、HTML5还原设计稿');  
+    },  
+    code: function() {  
+        Me.superClass.code.call(this);  
+        console.log(function() {  
+             
+            //1. 根据规范来命名如驼峰、_、$等； 
+           // 2. 使用闭包来避免变量污染； 
+            //3. 相同处理逻辑代码抽出来作为一个功能模块； 
+            //4. 避免与HTML、CSS产生耦合； 
+            //5. 注意代码的性能优化 
+           
+        }.toString().split('\n').slice(2, -2).toString().replace(/\t/g, '').split(',').join('\n'))  
+    },  
+    manage: function() {  
+        console.log('我有一个属于自己的代码库和记录知识点的博客');  
+    },  
+    habit: function() {  
+        console.log('twitter、HTML5Rock、CSS3-trick、W3.org...');  
+    },  
+    enjoy: function() {  
+        console.log('我喜欢打篮球和看NBA，最喜欢的球员是Steve·Nash');  
+    }  
+});  
+  
+var me = new Me({  
+    EnglishName: 'monkindey',  
+    Email: 'monkindey@163.com',  
+    School: '广东工业大学计算机学院网络工程 11级'  
+});  
+  
+console.dir(me);  
+
+*/
+
+
+/*================15====================
+ 
+ * 已知有字符串foo='get-element-by-id',写一个function将其转化成驼峰表示法'getElementById'。
+
+ *=====================================*/
+// function convertStr(str){
+//     if(typeof str === 'string'){
+//         var temparr = str.split('-');
+//         for(var i =1,len = temparr.length;i<len;i++){
+
+
+//             temparr[i] = temparr[i][0].toUpperCase() + temparr[i].substring(1);
+//         }
+
+//         str = temparr.join('');
+
+//     }
+//     return str;
+// }
+//
+function convertStr(s) {
+    return s.replace(/-(\w)/g, function (strMatch, p1){  //例：s = www-rrr  strtMarch值是-r,p1是r,指的是紧挨着-后面的r
+        return p1.toUpperCase();
+    });
+}
+/*
+var str = 'get-element-by-id';
+var newstr = convertStr(str);
+console.log('str = ',str);
+console.log('newstr = ',newstr);
+*/
+
+/*================16====================
+ * 实现对该数组的倒排和降序
+ *=====================================*/
+ function reversrArr(arr){
+
+    return arr.reverse();
+ }
+ /*
+ var arr = ['q','s','n'];
+ reversrArr(arr);
+ console.log('arr = ',arr);
+ */
+
+/*================17====================
+
+ * 输出今天的日期，以YYYY-MM-DD的方式，比如今天是2014年9月26日，则输出2014-09-26
+ * 
+ *=====================================*/
+ function formatDate(){
+
+    var date = new Date();
+    var month = date.getMonth() + 1
+    month = month < 10 ? '0' + month :month;
+
+    var day = date.getDate();
+    day = day < 10 ? '0' + day: day;
+
+    var formatDate = date.getFullYear() + '-' + month + '-' + day;
+
+    return formatDate;
+ }
+/*
+ var formatDate = formatDate();
+ console.log('date = ',formatDate);
+ */
+
+/*================18====================
+
+ * 将字符串'<tr><td>{$id}</td><td>{$name}</td></tr>'中的{$id}替换成10，{$name}替换成Tony （使用正则表达式）
+ * 
+ * '<tr><td>{$id}</td><td>{$id}_{$name}</td></tr>'.replace(/{\$id}/g, '10').replace(/{\$name}/g, 'Tony');
+ * 
+ *=====================================*/
+
+/*================19====================
+    看下列代码，将会输出什么?(变量声明提升)
+
+ *=====================================*/
+var foo = 1;
+
+function example_4(){
+    
+    //console.log(foo);
+    var foo = 2;
+    //console.log(foo);
+}
+
+/*================19====================
+ (1)、小贤是一条可爱的小狗(Dog)，它的叫声很好听(wow)，每次看到主人的时候就会乖乖叫一声(yelp)。从这段描述可以得到以下对象
+（2）、小芒和小贤一样，原来也是一条可爱的小狗，可是突然有一天疯了(MadDog)，一看到人就会每隔半秒叫一声(wow)地不停叫唤(yelp)。请根据描述，按示例的形式用代码来实。（继承，原型，setInterval）
+
+ *=====================================*/
+
+function Dog(){
+
+    this.wow = function(){
+        alert('wow');
+    }
+    this.yelp = function(){
+        this.wow();
+    }
+}
+
+function MadDog(){
+    this.yelp = function(){
+
+        var self = this;
+        //setInterval(self.wow,500);
+    }
+}
+/*
+var xiaoxian = new Dog();
+MadDog.prototype = new Dog();
+var xiaomang = new MadDog();
+xiaomang.yelp();
+*/
+
+/*================20====================
+    
+    定义一个log方法，让它可以代理console.log的方法。
+
+ *=====================================*/
+
+ function log(){
+
+    var args = Array.prototype.slice.call(arguments);  //将arguments类数组转化成真正的数组
+    args.unshift('(app)');
+    console.log.apply(console,args);
+ }
+/*
+ log('hello');
+ */
+
+/*================21====================
+    改变this的指向
+    call和apply方法会立即作用并执行。不存在浏览器的兼容问题
+    bind方法会返回一个新函数。存在浏览器兼容问题。firefox原生支持bind方法。但是ie只有在ie10以上才支持，低版本会得到undefined。解决办法就是在
+    Function原型上自定义bind方法。
+
+
+ *=====================================*/
+
+//方法一
+if (!Function.prototype.bind) {
+    Function.prototype.bind = function (oThis) {
+        if (typeof this !== "function") {
+        // closest thing possible to the ECMAScript 5 internal IsCallable function
+            throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+        }
+        var aArgs = Array.prototype.slice.call(arguments, 1),
+        fToBind = this,
+        fNOP = function () {},
+        fBound = function () {
+            return fToBind.apply(this instanceof fNOP && oThis? this: oThis,aArgs.concat(Array.prototype.slice.call(arguments)));
+        };
+
+        fNOP.prototype = this.prototype;
+        fBound.prototype = new fNOP();
+        return fBound;
+    };
+}
+
+//方法二：
+if (!Function.prototype.bind) {
+    Function.prototype.bind = function(context) {
+        var self = this
+            , args = Array.prototype.slice.call(arguments);
+            
+        return function() {
+            return self.apply(context, args.slice(1));    
+        }
+    };
+} 
+var User = {
+    count:10,
+    getCount:function(){
+        return this.count;
+    }
+};
+
+/*
+console.log(User.getCount());
+var f = User.getCount;
+f.call(User);
+console.log(f.call(User));
+var ff = f.bind(User)
+console.log(ff());
+
+*/
+
+/*================22=======================================================
+
+   用原生js实现jquery $(document).ready(function(){})    ????
+
+ *=========================================================================*/
+function ready(fn){
+    if(document.addEventListener) {        //标准浏览器
+        document.addEventListener('DOMContentLoaded', function() {
+              //注销事件, 避免反复触发
+            document.removeEventListener('DOMContentLoaded',arguments.callee, false);
+            fn();            //执行函数
+        }, false);
+    }else if(document.attachEvent) {        //IE
+        document.attachEvent('onreadystatechange', function() {
+            if(document.readyState == 'complete') {
+                document.detachEvent('onreadystatechange', arguments.callee);
+                fn();        //函数执行
+            }
+        });
+    }
+
+};
+
+/*================22=======================================================
+
+   使用原生js实现一个对页面某个节点的拖曳(没实现--实现了--写在一个单独的例子里了，鼠标拖拽，可在那里查看）
+
+    1.  给需要拖拽的节点绑定mousedown, mousemove, mouseup事件
+    2.  mousedown事件触发后，开始拖拽
+    3.  mousemove时，需要通过event.clientX和clientY获取拖拽位置，并实时更新位置
+    4.  mouseup时，拖拽结束
+    5.  需要注意浏览器边界的情况
+
+    移动后元素的X坐标为:鼠标移动后的X坐标 - 鼠标按下的X坐标 + 元素的初始X坐标
+                Y坐标为:鼠标移动后的Y坐标 - 鼠标按下的Y坐标 + 元素的初始Y坐标
+*=========================================================================*/
+
+
+/*================23=======================================================
+
+   tips例子(没实现)
+
+   1、用户第一次进来时显示，同一天访问该页面不显示tip提示
+   2、用户点击"我知道了"此后访问该页面不再显示tip提醒  （设置display：none）
+
+   ----感觉还有问题  当关闭tip后，重新刷新页面的时候，理论上不应该再显示tips，但是实际上还是显示了
+
+
+*=========================================================================*/
+  window.onload = function(){
+
+
+  function setCookie(name,value,days){  //给cookie增加一个时间变量  
+  　　var exp = new Date();   
+  　　exp.setTime(exp.getTime() + days*24*60*60*1000); //设置过期时间为days天  
+  　　document.cookie = name + "="+ escape(value) + ";expires=" + exp.toGMTString();   
+  }   
+  
+  
+  function getCookie(name){  
+  　 var result = "";  
+  　 var myCookie = document.cookie;   
+ 　　var searchName = "name" + "=";  
+ 　　var startOfCookie = myCookie.indexOf(searchName);  
+ 　　var endOfCookie;  
+ 　　if(startOfCookie != -1){  
+ 　　　　startOfcookie += searchName.length;  
+ 　　　　endOfCookie = myCookie.indexOf(";",startOfCookie);  
+ 　　　　result = myCookie.substring(startOfCookie,endOfCookie);  
+ 　　}  
+ 　　return result;  
+ }  
+   
+ var dom = document.getElementById("test4");  
+ var page = {  
+     init: function () {  
+         var result = this.check();  
+         if (result) {  
+             this.showTip();  
+             setCookie("tips", "showed", 1);  
+         } else {  
+             this.hideTip();  
+         }  
+         dom.onclick = function () {  
+             page.hideTip();  
+               
+         };  
+     },  
+     check: function () {  
+         var tips = getCookie("tips");  
+         if (!tips) {   // 如果cookie过期了，这个cookie 的值是不存在了，会查询不到对应的name  
+             return true;  
+         } else if (tips == "never" || tips == "showed") {  
+             return false;  
+         }  
+     },  
+     showTip: function () {  
+         dom.style.display = "inline-block";  
+     },  
+     hideTip: function () {  
+         dom.style.display = "none";  
+         setCookie("tips", "never", 365);  
+     }  
+ };  
+ page.init();
+
+}
+</script>
+</head>
+<body>
+<ul id="test1">
+
+    <li class = "li">这是第一条</li>
+    <li class = "li">这是第二条</li>
+    <li class = "li">这是第三条</li>
+
+</ul>
+
+    <input id = "test2" value = "test2" type = "text"/>
+<div id = "test3"></div>
+
+<div id = "test4" style = "width:100px;height:100px;background-color:red;position:absolute;left:10;top:300px;"></div>
+
+</body>
+</html>
