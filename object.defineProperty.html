@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8"></meta>
+</head>
+<body>
+  <div id="test">这是一个测试</div>
+  <script>
+    var view = document.getElementById('test');
+    var i = 0;
+    var data = {};
+    Object.defineProperty(data,'b',{
+      set: function(newValue) {
+        view.textContent = newValue
+      },
+      get: function () {
+
+      }
+    })
+
+    var timer = setInterval(function() {
+      i++
+      data['b'] = i
+    },2000)
+  </script>
+</body>
