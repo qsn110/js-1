@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+  
+    function f1() {console.log('aa')}  
+    console.log(f1());   //f1没有返回值，所以会返回默认的undefined
+
+    console.log(f2);   
+    
+    var f2 = function() {};
+
+    /**
+     * 执行过程：
+     * function f1() {console.log('aa')}
+     * console.log(f1()); 
+     * console.log(f2); 
+     * 
+     * 执行结果：
+     * aa
+     * undefined
+     * undefined
+     *    
+    */
+
+
+    
+  (function() {
+  　　console.log(a);
+  　　a = 'aaa';
+  　　var a = 'bbb';
+  　　console.log(a);
+  })();
+
+  /***执行过程：
+   * var a;
+   * console.log(a)
+   * a = 'bbb'
+   * console.log(a)
+   * 
+   * 执行结果：
+   * undefined
+   * 'bbb'
+   * 
+   * 注：立即执行函数前面如果有其他内容，则必须有个分号（;）,否则会报错！！！
+   * **/
+
+  
+  </script>
+</body>
+</html>
