@@ -8,7 +8,7 @@
 </head>
 <body>
   <script>
-  
+    /*例一*/
     function f1() {console.log('aa')}  
     console.log(f1());   //f1没有返回值，所以会返回默认的undefined
 
@@ -17,7 +17,7 @@
     var f2 = function() {};
 
     /**
-     * 执行过程：
+     * 解析过程：
      * function f1() {console.log('aa')}
      * console.log(f1()); 
      * console.log(f2); 
@@ -30,7 +30,7 @@
     */
 
 
-    
+  /*例二*/
   (function() {
   　　console.log(a);
   　　a = 'aaa';
@@ -38,7 +38,7 @@
   　　console.log(a);
   })();
 
-  /***执行过程：
+  /***解析过程：
    * var a;
    * console.log(a)
    * a = 'bbb'
@@ -52,6 +52,89 @@
    * **/
 
   
+    /*例三*/
+    var a = 1;
+    function b() {
+      console.log(a);
+      a = 2;      //a前面没有var,是全局变量！！！
+    }
+    b();
+    console.log(a);
+
+    /*
+    执行结果：
+      1
+      2    
+    */
+  
+    
+    /*例四*/
+    function foo() {
+      console.log('global foo');
+    }
+    function bar () {
+      console.log('global bar')
+    }
+
+    var v = 'global var';
+    function hoistMe () {
+      console.log(typeof foo);
+      console.log(typeof bar);
+      console.log(v);
+      foo();
+      bar();
+
+      function foo () {
+        console.log('local foo');
+      }
+      var bar = function () {
+        console.log('local bar');
+      }
+
+      var v = 'local';
+
+
+    };
+    (function () {
+      hoistMe();
+    })();
+
+    /**
+     * hositMez()函数解析成：
+     * function hoistMe () {
+     *  //函数声明，变量foo以及其实现都被提升到了作用域的上方.这种形式下可以先执行函数，在声明函数。
+     *  function foo () {
+          console.log('local foo');
+        }
+        //函数表达式，仅bar被提升到了作用域的上方。这种形式下，只能先声明函数，在执行函数
+        var bar = undefined;
+        var v = undefined;
+
+        console.log(typeof foo);
+        console.log(typeof bar);
+        console.log(v);
+        foo();
+        bar();
+
+        
+        var bar = function () {
+          console.log('local bar');
+        }
+
+        v = 'local';
+
+
+      };
+     * 
+     * 执行结果：
+     * function
+     * undefined
+     * undefined
+     * local foo
+     * error:bar is not a function
+     * 
+    */
+
   </script>
 </body>
 </html>
