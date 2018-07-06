@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+
+    //对象始终是true
+    var a = 4 && 5 && null && 0    //结果为false，返回第一个false  =>null
+    var b = 4 && 5 && 'aa' && 'bb'  //结果为true,返回最后一个true  =>'bb'
+    
+    var d = 0 || null || ''       //结果为false,返回最后一个false => ''
+    var c = 4 || 5 || null && 0   //结果为true，返回第一个true  =>4
+    
+  </script>
+</body>
+</html>
