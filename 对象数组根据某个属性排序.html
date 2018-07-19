@@ -10,9 +10,11 @@
   <script>
     function createCompareFunction (propertyName) {
       return function (object1,object2) {
-        var value1 = object1[propertyName];
-        var value2 = object2[propertyName];
-        return (value1 - value2);
+        var value1 = object1[propertyName].toLowerCase();
+        var value2 = object2[propertyName].toLowerCase();
+        if(value1 < value2) return -1;
+    	  if(value1 > value2) return 1;
+        return 0
       }
     }
 
