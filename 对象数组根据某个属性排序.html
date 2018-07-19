@@ -8,14 +8,25 @@
 </head>
 <body>
   <script>
-    function createCompareFunction (propertyName) {
-      return function (object1,object2) {
-        var value1 = object1[propertyName].toLowerCase();
-        var value2 = object2[propertyName].toLowerCase();
+    
+    //针对中文排序还不好使
+    function  compareFunction (propertyName) {
+     return function (object1,object2) {
+       var value1 = object1[propertyName].toLowerCase()
+       var value2 = object2[propertyName].toLowerCase()
+
+       if (!isNaN(parseInt(value1)) && !isNaN(parseInt(value2)))　{
+         //处理类似arr = ['11号线'，'7号线','9号线']的情况
+          value1 = parseInt(value1) 
+          value2 = parseInt(value2)
+          
+       }
+       
+        
         if(value1 < value2) return -1;
     	  if(value1 > value2) return 1;
         return 0
-      }
+     }
     }
 
     var arr = [{'name':'tom','age':28},{'name':'jake','age':10}];
