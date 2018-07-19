@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+   var str = 'cat,bat.fat';
+   var pattern = /.at/g;
+
+   //math方法
+   var strnew = str.match(pattern);
+   console.log(strnew)  //=>['cat','bat','fat']
+  
+  //search方法
+   var pos = str.search(/at/)
+   console.log(pos)
+
+   //replace方法，如果是用一个字符串替换另一个字符串，则只会替换第一个符合要求的字符串，要想替换所有的，第一个参数要是RegExp对象
+   var result = str.replace('at','ong')
+   console.log(result) //=> 'cong,bat,fat'
+
+   var result2 = str.replace(/at/g,'ong');
+   console.log(result2); //=>'cong,bong,fong'
+
+    //三个方法均返回一个新字符串
+  </script>
+</body>
+</html> 
