@@ -42,7 +42,43 @@
     }
     
     var resu2 = createFunction2()
-    console.log(resu2[4]())  //=>4
+    console.log(resu2[4]());  //=>4
+
+
+    /**/
+
+    (function () {
+      var name = 'the outer';
+      var object = {
+        name:'the inner',
+        getName:function () {
+          return function () {
+            return this.name;
+          }
+        }
+      }
+
+      // var r1 = object.getName()()
+      console.log(object.getName()())  //=>the outer
+    })();
+
+    /**/
+    (function () {
+      var name = 'the outer';
+      var object = {
+        name:'the inner',
+        getName:function () {
+          var _this = this;
+          return function () {
+            return _this.name;
+          }
+        }
+      }
+
+      // var r1 = object.getName()()
+      console.log(object.getName()())  //=>the inner
+    })()
+
 
   </script>
 </body>
